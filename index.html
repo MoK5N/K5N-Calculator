@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>K5N Trash Valet Pricing Calculator</title>
+    <script>
+        function calculate() {
+            let units = parseFloat(document.getElementById("units").value) || 1; // Prevent division by zero
+            let shiftsPerMonth = parseFloat(document.getElementById("shiftsPerMonth").value) || 1; // Prevent division by zero
+            let hourlyWage = parseFloat(document.getElementById("hourlyWage").value) || 0;
+            let workers = parseFloat(document.getElementById("workers").value) || 0;
+            let shiftDuration = parseFloat(document.getElementById("shiftDuration").value) || 0;
+            let profitMargin = parseFloat(document.getElementById("profitMargin").value) || 0;
+            
+            let totalLaborCost = hourlyWage * workers * shiftDuration * shiftsPerMonth;
+            
+            let expenseInputs = document.getElementsByClassName("expense");
+            let totalExpenses = 0;
+            for (let i = 0; i < expenseInputs.length; i++) {
+                totalExpenses += parseFloat(expenseInputs[i].value) || 0;
+            }
+            
+            let socialSecurityTax = totalLaborCost * 0.062;
+            let medicareTax = totalLaborCost * 0.0145;
+            let unemploymentTax = totalLaborCost * 0.0091;
+            let totalPayrollTax = socialSecurityTax + medicareTax + unemploymentTax;
+            
+            let totalMonthlyCost = totalLaborCost + totalExpenses + totalPayrollTax;
+            let costPerShift = totalMonthlyCost / shiftsPerMonth;
+            let costPerUnitPerMonth = (totalLaborCost + totalExpenses + totalPayrollTax) / units;
+            let revenuePerUnit = costPerUnitPerMonth * (1 + profitMargin / 100);
+            let revenuePerMonth = revenuePerUnit * units;
+            
+            document.getElementById("totalCost").innerText = "$" + totalMonthlyCost.toFixed(2);
+            document.getElementById("costPerShift").innerText = "$" + costPerShift.toFixed(2);
+            document.getElementById("costPerUnit").innerText = "$" + costPerUnitPerMonth.toFixed(2);
+            document.getElementById("revenuePerUnit").innerText = "$" + revenuePerUnit.toFixed(2);
+            document.getElementById("revenuePerMonth").innerText = "$" + revenuePerMonth.toFixed(2);
+            
+            document.getElementById("socialSecurityTax").innerText = "$" + socialSecurityTax.toFixed(2);
+            document.getElementById("medicareTax").innerText = "$" + medicareTax.toFixed(2);
+            document.getElementById("unemploymentTax").innerText = "$" + unemploymentTax.toFixed(2);
+        }
+    </script>
+</head>
+<body>
+    <h1>K5N Trash Valet Pricing Calculator</h1>
+    <label>Number of Units: <input type="number" id="units" value="100"></label><br>
+    <label>Number of Shifts per Month: <input type="number" id="shiftsPerMonth" value="20"></label><br>
+    <label>Hourly Wage per Worker: <input type="number" id="hourlyWage" value="15"></label><br>
+    <label>Number of Workers: <input type="number" id="workers" value="1"></label><br>
+    <label>Shift Duration (Hours): <input type="number" id="shiftDuration" value="1.5"></label><br>
+    <label>Profit Margin (%): <input type="number" id="profitMargin" value="50"></label><br>
+    
+    <h3>Base Expenses:</h3>
+    <div id="expenses">
+        <div>
+            <input type="text" value="Gloves"> <input type="number" class="expense" value="10"> <button onclick="this.parentNode.remove()">Remove</button>
+        </div>
+        <div>
+            <input type="text" value="Transportation"> <input type="number" class="expense" value="150"> <button onclick="this.parentNode.remove()">Remove</button>
+        </div>
+        <div>
+            <input type="text" value="Insurance"> <input type="number" class="expense" value="100"> <button onclick="this.parentNode.remove()">Remove</button>
+        </div>
+        <div>
+            <input type="text" value="Truck Lease"> <input type="number" class="expense" value="550"> <button onclick="this.parentNode.remove()">Remove</button>
+        </div>
+    </div>
+    <button onclick="addExpense()">Add Expense</button><br><br>
+    <button onclick="calculate()">Calculate</button>
+    
+    <h3>Results:</h3>
+    <p>Total Monthly Cost: <span id="totalCost">$0.00</span></p>
+    <p>Cost Per Shift: <span id="costPerShift">$0.00</span></p>
+    <p>Cost Per Unit Per Month: <span id="costPerUnit">$0.00</span></p>
+    <p>Revenue Per Unit: <span id="revenuePerUnit">$0.00</span></p>
+    <p>Revenue Per Month: <span id="revenuePerMonth">$0.00</span></p>
+    
+    <h3>Texas Payroll Taxes (Auto-Calculated):</h3>
+    <p>Social Security Tax (6.2%): <span id="socialSecurityTax">$0.00</span></p>
+    <p>Medicare Tax (1.45%): <span id="medicareTax">$0.00</span></p>
+    <p>Unemployment Tax (0.91%): <span id="unemploymentTax">$0.00</span></p>
+</body>
+</html>
